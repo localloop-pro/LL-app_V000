@@ -55,7 +55,7 @@ export async function GET(req: Request) {
         const [{ db }, { sql }, schema] = await Promise.all([
           import("@/lib/db"),
           import("drizzle-orm"),
-          import("@/lib/schema"),
+          import("@/lib/db/schema"),
         ]);
 
         // Ping DB - this will actually attempt to connect

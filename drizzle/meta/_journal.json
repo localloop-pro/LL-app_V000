@@ -15,6 +15,13 @@
       "when": 1765324234067,
       "tag": "0001_reflective_wolf_cub",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765453900372,
+      "tag": "0002_ambiguous_pixie",
+      "breakpoints": true
     }
   ]
 }
