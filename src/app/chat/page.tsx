@@ -219,9 +219,29 @@ export default function ChatPage() {
     },
   });
   const [input, setInput] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Track mount state for hydration debugging
+  useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/fbf364e2-b158-4b29-ab09-2dfcc23abe0f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'chat/page.tsx:220',message:'Component mounted on client',data:{isPending,hasSession:!!session},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
+    setIsMounted(true);
+  }, []);
+
+  // #region agent log
+  if (typeof window !== 'undefined') {
+    fetch('http://127.0.0.1:7243/ingest/fbf364e2-b158-4b29-ab09-2dfcc23abe0f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'chat/page.tsx:215',message:'ChatPage render - session state',data:{isPending,hasSession:!!session,sessionUserId:session?.user?.id,typeofWindow:'defined'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+  } else {
+    fetch('http://127.0.0.1:7243/ingest/fbf364e2-b158-4b29-ab09-2dfcc23abe0f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'chat/page.tsx:215',message:'ChatPage render - session state (SSR)',data:{isPending,hasSession:!!session,sessionUserId:session?.user?.id,typeofWindow:'undefined'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+  }
+  // #endregion
 
   // Load messages from localStorage on mount (runs client-side only)
   useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/fbf364e2-b158-4b29-ab09-2dfcc23abe0f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'chat/page.tsx:224',message:'useEffect - localStorage load (client only)',data:{hasLocalStorage:typeof localStorage !== 'undefined'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+    // #endregion
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
@@ -250,10 +270,26 @@ export default function ChatPage() {
     toast.success("Chat cleared");
   };
 
-  if (isPending) {
+  // #region agent log
+  if (typeof window !== 'undefined') {
+    fetch('http://127.0.0.1:7243/ingest/fbf364e2-b158-4b29-ab09-2dfcc23abe0f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'chat/page.tsx:273',message:'Render branch check - hydration guard',data:{isPending,isMounted,hasSession:!!session,willRenderLoading:!isMounted || isPending},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
+  } else {
+    fetch('http://127.0.0.1:7243/ingest/fbf364e2-b158-4b29-ab09-2dfcc23abe0f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'chat/page.tsx:273',message:'Render branch check - hydration guard (SSR)',data:{isPending,isMounted,hasSession:!!session,willRenderLoading:!isMounted || isPending},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
+  }
+  // #endregion
+  // Prevent hydration mismatch: show loading until client mount completes
+  // This ensures server and client render the same initial content
+  if (!isMounted || isPending) {
     return <div className="container mx-auto px-4 py-12">Loading...</div>;
   }
 
+  // #region agent log
+  if (typeof window !== 'undefined') {
+    fetch('http://127.0.0.1:7243/ingest/fbf364e2-b158-4b29-ab09-2dfcc23abe0f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'chat/page.tsx:280',message:'Render branch check - !session',data:{hasSession:!!session,isMounted,willRenderUserProfile:!session},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'B'})}).catch(()=>{});
+  } else {
+    fetch('http://127.0.0.1:7243/ingest/fbf364e2-b158-4b29-ab09-2dfcc23abe0f',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'chat/page.tsx:280',message:'Render branch check - !session (SSR)',data:{hasSession:!!session,isMounted,willRenderUserProfile:!session},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'B'})}).catch(()=>{});
+  }
+  // #endregion
   if (!session) {
     return (
       <div className="container mx-auto px-4 py-12">
