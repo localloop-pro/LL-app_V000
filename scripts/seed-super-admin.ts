@@ -42,6 +42,10 @@ async function seed() {
       })
       .returning();
 
+    if (!nsw[0]) {
+      throw new Error("Failed to create NSW region");
+    }
+
     await db
       .insert(geoLocation)
       .values({
@@ -57,9 +61,13 @@ async function seed() {
         id: "sydney",
         name: "Sydney",
         type: "city",
-        parentId: nsw && nsw[0] ? nsw[0].id : undefined,
+        parentId: nsw[0].id,
       })
       .returning();
+
+    if (!sydney[0]) {
+      throw new Error("Failed to create Sydney region");
+    }
 
     const bondi2026 = await db
       .insert(geoLocation)
@@ -67,11 +75,15 @@ async function seed() {
         id: "bondi-2026",
         name: "Bondi (2026)",
         type: "postcode",
-        parentId: sydney && sydney[0] ? sydney[0].id : undefined,
+        parentId: sydney[0].id,
         latitude: -33.8915,
         longitude: 151.2767,
       })
       .returning();
+
+    if (!bondi2026[0]) {
+      throw new Error("Failed to create Bondi region");
+    }
 
     await db
       .insert(geoLocation)
@@ -79,7 +91,7 @@ async function seed() {
         id: "bronte-2024",
         name: "Bronte (2024)",
         type: "postcode",
-        parentId: sydney && sydney[0] ? sydney[0].id : undefined,
+        parentId: sydney[0].id,
         latitude: -33.9067,
         longitude: 151.2633,
       });
@@ -90,7 +102,7 @@ async function seed() {
         id: "coogee-2034",
         name: "Coogee (2034)",
         type: "postcode",
-        parentId: sydney && sydney[0] ? sydney[0].id : undefined,
+        parentId: sydney[0].id,
         latitude: -33.9233,
         longitude: 151.2556,
       });
@@ -113,9 +125,13 @@ async function seed() {
         longitude: 151.2767,
         totalSales: 12450,
         rating: 4.8,
-        locationId: bondi2026 && bondi2026[0] ? bondi2026[0].id : undefined,
+        locationId: bondi2026[0].id,
       })
       .returning();
+
+    if (!bondiBurger[0]) {
+      throw new Error("Failed to create Bondi Burger merchant");
+    }
 
     await db
       .insert(merchant)
@@ -133,7 +149,7 @@ async function seed() {
         longitude: 151.2745,
         totalSales: 0,
         rating: 0,
-        locationId: bondi2026[0]!.id,
+        locationId: bondi2026[0].id,
       });
 
     await db
@@ -152,7 +168,7 @@ async function seed() {
         longitude: 151.2789,
         totalSales: 0,
         rating: 0,
-        locationId: bondi2026[0]!.id,
+        locationId: bondi2026[0].id,
       });
 
     await db
@@ -171,14 +187,14 @@ async function seed() {
         longitude: 151.2795,
         totalSales: 8500,
         rating: 4.5,
-        locationId: bondi2026[0]!.id,
+        locationId: bondi2026[0].id,
       });
 
     // Seed Tickets
     console.log("Seeding tickets...");
     await db.insert(ticket).values({
       id: "ticket-402",
-      merchantId: bondiBurger[0]!.id,
+      merchantId: bondiBurger[0].id,
       title: "Content Issue",
       description:
         "Merchant is unable to upload the essay for 'Best Burgers in Bondi'. System throws error 505.",
