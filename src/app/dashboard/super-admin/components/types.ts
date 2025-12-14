@@ -32,7 +32,11 @@ export interface GeoLocation {
   name: string;
   type: 'country' | 'state' | 'city' | 'postcode';
   children?: GeoLocation[];
-  coordinates?: [number, number];
+  /**
+   * Geographic coordinates.
+   * Stored as named fields to avoid tuple ordering mistakes.
+   */
+  coordinates?: { longitude: number; latitude: number };
 }
 
 export interface Stats {
@@ -61,19 +65,19 @@ export const mockGeoHierarchy: GeoLocation[] = [
                 id: 'bondi-2026',
                 name: 'Bondi (2026)',
                 type: 'postcode',
-                coordinates: [151.2767, -33.8915],
+                coordinates: { longitude: 151.2767, latitude: -33.8915 },
               },
               {
                 id: 'bronte-2024',
                 name: 'Bronte (2024)',
                 type: 'postcode',
-                coordinates: [151.2633, -33.9067],
+                coordinates: { longitude: 151.2633, latitude: -33.9067 },
               },
               {
                 id: 'coogee-2034',
                 name: 'Coogee (2034)',
                 type: 'postcode',
-                coordinates: [151.2556, -33.9233],
+                coordinates: { longitude: 151.2556, latitude: -33.9233 },
               },
             ],
           },

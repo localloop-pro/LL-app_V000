@@ -24,10 +24,9 @@ export async function GET() {
         id: loc.id,
         name: loc.name,
         type: loc.type as "country" | "state" | "city" | "postcode",
-        coordinates:
-          loc.latitude && loc.longitude
-            ? ([loc.longitude, loc.latitude] as [number, number])
-            : undefined,
+        ...(loc.latitude != null && loc.longitude != null
+          ? { coordinates: { longitude: loc.longitude, latitude: loc.latitude } }
+          : {}),
         children: buildTree(loc.id),
       }));
     };

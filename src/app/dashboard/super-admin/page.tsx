@@ -47,11 +47,12 @@ export default function SuperAdminPage() {
   // Fetch merchants and stats when location changes
   useEffect(() => {
     if (!selectedLocation) return;
+    const location = selectedLocation;
 
     async function fetchData() {
       setLoading(true);
       try {
-        const locationId = selectedLocation.id;
+        const locationId = location.id;
         const [merchantsRes, statsRes] = await Promise.all([
           fetch(`/api/super-admin/merchants?locationId=${locationId}`),
           fetch(`/api/super-admin/stats?locationId=${locationId}`),
@@ -197,7 +198,12 @@ export default function SuperAdminPage() {
             <MerchantMap
               merchants={merchants}
               center={
-                selectedLocation?.coordinates || [151.2767, -33.8915]
+                selectedLocation?.coordinates
+                  ? [
+                      selectedLocation.coordinates.longitude,
+                      selectedLocation.coordinates.latitude,
+                    ]
+                  : [151.2767, -33.8915]
               }
               zoom={selectedLocation?.type === "postcode" ? 14 : 12}
               onMerchantClick={setSelectedMerchant}
