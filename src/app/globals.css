@@ -132,9 +132,3 @@
   -webkit-font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
 }
-
-/* Next.js Dev Tools Portal Positioning Overrides */
-nextjs-portal {
-  left: auto !important;
-  top: auto !important;
-}
