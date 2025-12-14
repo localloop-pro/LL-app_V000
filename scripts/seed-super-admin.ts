@@ -28,6 +28,10 @@ async function seed() {
       })
       .returning();
 
+    if (!australia[0]) {
+      throw new Error("Failed to create Australia region");
+    }
+
     const nsw = await db
       .insert(geoLocation)
       .values({
