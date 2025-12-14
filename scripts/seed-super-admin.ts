@@ -57,7 +57,7 @@ async function seed() {
         id: "sydney",
         name: "Sydney",
         type: "city",
-        parentId: nsw[0].id,
+        parentId: nsw && nsw[0] ? nsw[0].id : undefined,
       })
       .returning();
 
@@ -67,7 +67,7 @@ async function seed() {
         id: "bondi-2026",
         name: "Bondi (2026)",
         type: "postcode",
-        parentId: sydney[0].id,
+        parentId: sydney && sydney[0] ? sydney[0].id : undefined,
         latitude: -33.8915,
         longitude: 151.2767,
       })
@@ -79,7 +79,7 @@ async function seed() {
         id: "bronte-2024",
         name: "Bronte (2024)",
         type: "postcode",
-        parentId: sydney[0].id,
+        parentId: sydney && sydney[0] ? sydney[0].id : undefined,
         latitude: -33.9067,
         longitude: 151.2633,
       });
@@ -90,7 +90,7 @@ async function seed() {
         id: "coogee-2034",
         name: "Coogee (2034)",
         type: "postcode",
-        parentId: sydney[0].id,
+        parentId: sydney && sydney[0] ? sydney[0].id : undefined,
         latitude: -33.9233,
         longitude: 151.2556,
       });
@@ -113,7 +113,7 @@ async function seed() {
         longitude: 151.2767,
         totalSales: 12450,
         rating: 4.8,
-        locationId: bondi2026[0].id,
+        locationId: bondi2026 && bondi2026[0] ? bondi2026[0].id : undefined,
       })
       .returning();
 
