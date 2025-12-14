@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
+import type { GeoLocation } from "@/app/dashboard/super-admin/components/types";
+import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { geoLocation } from "@/lib/db/schema";
-import { requireAdmin } from "@/lib/admin";
-import type { GeoLocation } from "@/app/dashboard/super-admin/components/types";
 
 export async function GET() {
   try {

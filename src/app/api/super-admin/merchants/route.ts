@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { merchant, ticket } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin";
+import { db } from "@/lib/db";
+import { merchant, ticket } from "@/lib/db/schema";
 
 export async function GET(request: Request) {
   try {

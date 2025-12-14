@@ -1,5 +1,5 @@
-import { pgTable, text, timestamp, integer, doublePrecision, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import { pgTable, text, timestamp, integer, doublePrecision, index } from "drizzle-orm/pg-core";
 
 export const geoLocation = pgTable(
   "geo_location",

@@ -219,12 +219,6 @@ export default function ChatPage() {
     },
   });
   const [input, setInput] = useState("");
-  const [isMounted, setIsMounted] = useState(false);
-
-  // Track mount state for hydration debugging
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   // Load messages from localStorage on mount (runs client-side only)
   useEffect(() => {
@@ -255,9 +249,7 @@ export default function ChatPage() {
     localStorage.removeItem(STORAGE_KEY);
     toast.success("Chat cleared");
   };
-  // Prevent hydration mismatch: show loading until client mount completes
-  // This ensures server and client render the same initial content
-  if (!isMounted || isPending) {
+  if (isPending) {
     return <div className="container mx-auto px-4 py-12">Loading...</div>;
   }
   if (!session) {
