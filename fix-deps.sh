@@ -17,9 +17,11 @@ for path in "${MISSING[@]}"; do
     echo "  ✏️  Creating stub: $path"
     mkdir -p "$(dirname "$path")"
     name="$(basename "$path" .tsx)"
+    # Capitalize first letter for component name
+    capitalized_name="$(echo "$name" | sed 's/^./\U&/')"
     cat >"$path" <<EOL
 // AUTO-GENERATED stub
-export function ${name^}() {
+export function ${capitalized_name}() {
   return null
 }
 EOL
@@ -33,7 +35,7 @@ echo "🧹 Removing unwanted telemetry/font imports…"
 
 # 2️⃣ Delete any lines importing those two packages
 grep -RIl "@vercel/analytics\|geist/font" src/ \
-  | xargs -r sed -i '/@vercel\/analytics/d; /geist\/font/d'
+  | xargs -r sed -i '' '/@vercel\/analytics/d; /geist\/font/d'
 
 echo
 echo "✅ Done. Now rebuild:"
