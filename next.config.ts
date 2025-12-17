@@ -1,6 +1,23 @@
 import type { NextConfig } from "next";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const nextConfig: NextConfig = {
+  /**
+   * Ensure Turbopack treats THIS repo as the project root.
+   *
+   * Without this, Next.js may infer a higher-level directory as the root if it
+   * finds another lockfile above this repo (e.g. `/Users/user/package-lock.json`),
+   * which can cause:
+   * - confusing warnings about the root directory
+   * - `.env.local` being loaded from the wrong folder
+   */
+  turbopack: {
+    root: __dirname,
+  },
   // Image optimization configuration
   images: {
     remotePatterns: [
