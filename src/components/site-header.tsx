@@ -36,7 +36,7 @@ export function SiteHeader() {
             </Link>
           </h1>
           <div className="flex items-center gap-4" role="group" aria-label="User actions">
-            <UserProfile />
+            <UserProfile variant="inline" />
             <ModeToggle />
           </div>
         </nav>

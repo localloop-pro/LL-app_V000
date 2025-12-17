@@ -15,7 +15,16 @@ import {
 import { useSession, signOut } from "@/lib/auth-client";
 import { SignInButton } from "./sign-in-button";
 
-export function UserProfile() {
+type UserProfileProps = {
+  /**
+   * `inline` renders the sign-in button without extra layout wrappers so it can
+   * sit neatly inside tight spaces like the site header. `stacked` keeps the
+   * padded, centered layout for empty states on full pages.
+   */
+  variant?: "inline" | "stacked";
+};
+
+export function UserProfile({ variant = "stacked" }: UserProfileProps) {
   const { data: session, isPending } = useSession();
   const router = useRouter();
 
@@ -24,6 +33,10 @@ export function UserProfile() {
   }
 
   if (!session) {
+    if (variant === "inline") {
+      return <SignInButton />;
+    }
+
     return (
       <div className="flex flex-col items-center gap-4 p-6">
         <SignInButton />
