@@ -23,6 +23,8 @@ interface DiagnosticsResponse {
   };
   ai: {
     configured: boolean;
+    keyLooksValid: boolean;
+    keyLooksPlaceholder: boolean;
   };
   storage: {
     configured: boolean;
@@ -35,12 +37,23 @@ interface DiagnosticsResponse {
 // by the setup checklist on the homepage before users are logged in.
 // It only returns boolean flags about configuration status, not sensitive data.
 export async function GET(req: Request) {
+  const openRouterKey = process.env.OPENROUTER_API_KEY?.trim() ?? "";
+  const openRouterKeyConfigured = openRouterKey.length > 0;
+  // We avoid leaking any part of the key; this is purely heuristic guidance.
+  const openRouterKeyLooksPlaceholder =
+    openRouterKey.includes("your-key") || openRouterKey.includes("placeholder");
+  // OpenRouter keys typically start with `sk-or-` (commonly `sk-or-v1-`).
+  const openRouterKeyLooksValid =
+    openRouterKeyConfigured &&
+    openRouterKey.startsWith("sk-or-") &&
+    !openRouterKeyLooksPlaceholder;
+
   const env = {
     POSTGRES_URL: Boolean(process.env.POSTGRES_URL),
     BETTER_AUTH_SECRET: Boolean(process.env.BETTER_AUTH_SECRET),
     GOOGLE_CLIENT_ID: Boolean(process.env.GOOGLE_CLIENT_ID),
     GOOGLE_CLIENT_SECRET: Boolean(process.env.GOOGLE_CLIENT_SECRET),
-    OPENROUTER_API_KEY: Boolean(process.env.OPENROUTER_API_KEY),
+    OPENROUTER_API_KEY: openRouterKeyConfigured,
     NEXT_PUBLIC_APP_URL: Boolean(process.env.NEXT_PUBLIC_APP_URL),
   } as const;
 
@@ -148,6 +161,8 @@ export async function GET(req: Request) {
     },
     ai: {
       configured: aiConfigured,
+      keyLooksValid: openRouterKeyLooksValid,
+      keyLooksPlaceholder: openRouterKeyLooksPlaceholder,
     },
     storage: {
       configured: storageConfigured,

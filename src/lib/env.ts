@@ -102,6 +102,19 @@ export function checkEnv(): void {
 
   if (!process.env.OPENROUTER_API_KEY) {
     warnings.push("OPENROUTER_API_KEY is not set. AI chat will not work.");
+  } else {
+    const key = process.env.OPENROUTER_API_KEY.trim();
+    const looksPlaceholder = key.includes("your-key") || key.includes("placeholder");
+    const looksLikeOpenRouterKey = key.startsWith("sk-or-");
+    if (looksPlaceholder) {
+      warnings.push(
+        "OPENROUTER_API_KEY looks like a placeholder. Paste your real OpenRouter key and restart the dev server."
+      );
+    } else if (!looksLikeOpenRouterKey) {
+      warnings.push(
+        "OPENROUTER_API_KEY is set but doesn't look like an OpenRouter key (expected to start with 'sk-or-')."
+      );
+    }
   }
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {

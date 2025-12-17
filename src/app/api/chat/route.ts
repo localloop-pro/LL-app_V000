@@ -17,12 +17,17 @@ function getOpenRouterFriendlyError(error: unknown): string {
     anyErr && typeof anyErr === "object" && typeof anyErr.responseBody === "string"
       ? anyErr.responseBody
       : undefined;
+  const responseBodyLower = responseBody?.toLowerCase();
 
   // OpenRouter commonly returns 401 with message "User not found." for invalid API keys.
-  if (statusCode === 401 || responseBody?.includes('"User not found"')) {
+  if (
+    statusCode === 401 ||
+    responseBodyLower?.includes("user not found") ||
+    responseBodyLower?.includes("invalid api key")
+  ) {
     return [
       "OpenRouter authentication failed (401).",
-      "Check your OPENROUTER_API_KEY in .env (it should start with 'sk-or-v1-'), then restart the dev server.",
+      "Check OPENROUTER_API_KEY in .env.local (preferred) or .env (it should start with 'sk-or-'), then restart the dev server so Next.js reloads environment variables.",
     ].join(" ");
   }
 
@@ -92,18 +97,25 @@ export async function POST(req: Request) {
   // Initialize OpenRouter with API key from environment
   const apiKey = process.env.OPENROUTER_API_KEY?.trim();
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: "OpenRouter API key not configured. Set OPENROUTER_API_KEY in .env" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  // Catch common misconfigurations early (prevents confusing OpenRouter 401s).
-  if (!apiKey.startsWith("sk-or-v1-") || apiKey.includes("your-key")) {
     return new Response(
       JSON.stringify({
         error:
-          "Invalid OPENROUTER_API_KEY. Paste a real OpenRouter key (starts with 'sk-or-v1-') into your .env and restart the dev server.",
+          "OpenRouter API key not configured. Set OPENROUTER_API_KEY in .env.local (preferred) or .env, then restart the dev server.",
+      }),
+      {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  // Catch common misconfigurations early (prevents confusing OpenRouter 401s).
+  const looksPlaceholder = apiKey.includes("your-key") || apiKey.includes("placeholder");
+  if (!apiKey.startsWith("sk-or-") || looksPlaceholder) {
+    return new Response(
+      JSON.stringify({
+        error:
+          "Invalid OPENROUTER_API_KEY. Paste a real OpenRouter key (starts with 'sk-or-') into your .env.local (preferred) or .env and restart the dev server.",
       }),
       {
         status: 500,
@@ -112,7 +124,23 @@ export async function POST(req: Request) {
     );
   }
 
-  const openrouter = createOpenRouter({ apiKey });
+  // OpenRouter recommends sending these identifying headers.
+  // We derive the referer from the request URL when possible, without exposing secrets.
+  const origin = (() => {
+    try {
+      return new URL(req.url).origin;
+    } catch {
+      return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    }
+  })();
+
+  const openrouter = createOpenRouter({
+    apiKey,
+    headers: {
+      "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL?.trim() || origin,
+      "X-Title": "LL-app-V000",
+    },
+  });
 
   const result = streamText({
     model: openrouter(process.env.OPENROUTER_MODEL || "openai/gpt-5-mini"),

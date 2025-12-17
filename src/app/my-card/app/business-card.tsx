@@ -66,7 +66,8 @@ export default function BusinessCard() {
   const [showInviteForm, setShowInviteForm] = useState(false)
   const [showReviews, setShowReviews] = useState(false)
   const [showReviewForm, setShowReviewForm] = useState(false)
-  const [viewCount, setViewCount] = useState(0)
+  // This is a local/demo counter. If you want real view counting, track it server-side.
+  const [viewCount] = useState(1)
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [hasJobOffers] = useState(true)
   const [vipCount, setVipCount] = useState(0)
@@ -98,10 +99,8 @@ export default function BusinessCard() {
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
-
-  useEffect(() => {
-    setViewCount((prev) => prev + 1)
-  }, [])
+  // Avoid setState in an effect (eslint react-hooks/set-state-in-effect).
+  // If you later wire this up to a real analytics system, increment server-side instead.
 
   const calculateAverageRating = () => {
     const reviews = [{ rating: 5 }, { rating: 4 }]

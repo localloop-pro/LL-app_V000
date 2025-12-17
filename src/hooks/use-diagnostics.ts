@@ -23,6 +23,8 @@ type DiagnosticsResponse = {
   };
   ai: {
     configured: boolean;
+    keyLooksValid: boolean;
+    keyLooksPlaceholder: boolean;
   };
   overallStatus: "ok" | "warn" | "error";
 };
@@ -55,7 +57,7 @@ export function useDiagnostics() {
     data?.auth.configured &&
     data?.database.connected &&
     data?.database.schemaApplied;
-  const isAiReady = data?.ai.configured;
+  const isAiReady = data?.ai.keyLooksValid;
 
   return {
     data,

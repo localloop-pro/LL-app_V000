@@ -25,6 +25,8 @@ type DiagnosticsResponse = {
   };
   ai: {
     configured: boolean;
+    keyLooksValid: boolean;
+    keyLooksPlaceholder: boolean;
   };
   storage: {
     configured: boolean;
@@ -101,10 +103,17 @@ export function SetupChecklist() {
     {
       key: "ai",
       label: "AI integration (optional)",
-      ok: !!data?.ai.configured,
-      detail: !data?.ai.configured
-        ? "Set OPENROUTER_API_KEY for AI chat"
-        : undefined,
+      ok: !!data?.ai.keyLooksValid || !data?.ai.configured,
+      detail: (() => {
+        if (!data) return undefined;
+        if (!data.ai.configured)
+          return "Set OPENROUTER_API_KEY in .env.local (preferred) for AI chat";
+        if (data.ai.keyLooksPlaceholder)
+          return "OPENROUTER_API_KEY looks like a placeholder. Paste your real key and restart the dev server.";
+        if (!data.ai.keyLooksValid)
+          return "OPENROUTER_API_KEY is set but doesn't look valid (expected to start with 'sk-or-').";
+        return undefined;
+      })(),
     },
     {
       key: "storage",
