@@ -1,0 +1,9 @@
+# Query: next.config.ts
+# ContextLines: 1
+
+1 result - 1 file
+
+src/components/starter-prompt-modal.tsx:
+  48  - **Database setup and schema** (but modify schema as needed for your use case)
+  49  - **Core configuration files** (next.config.ts, tsconfig.json, tailwind.config.ts, etc. — in next.config.ts prefer `process.cwd()` over `__dirname` to avoid config compile issues)
+  50  - **Build and development scripts** (keep all npm/pnpm scripts in package.json)

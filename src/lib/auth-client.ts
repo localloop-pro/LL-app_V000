@@ -12,12 +12,15 @@ import { createAuthClient } from "better-auth/react";
  *   making the button appear to do nothing.
  *
  * Fix:
- * - Prefer the build-time env var if provided, otherwise use the runtime
- *   browser origin (`window.location.origin`) when available.
+ * - Always prefer the runtime browser origin (`window.location.origin`) when
+ *   we're on the client. This ensures we match whatever port/host Next dev
+ *   picked (e.g. 3004 when 3000 is busy) so OAuth popups don't fail with
+ *   "Load failed".
  */
 const resolvedBaseURL =
-  process.env.NEXT_PUBLIC_APP_URL ??
-  (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
+  typeof window !== "undefined"
+    ? window.location.origin
+    : process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 export const authClient = createAuthClient({
   baseURL: resolvedBaseURL,
